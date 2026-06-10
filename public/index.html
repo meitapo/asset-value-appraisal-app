@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>資産価値査定 | あなたの資産の「いま」の価値を</title>
+  <meta name="description" content="品名・型番を入力するだけで、価格.comの販売価格からあなたの資産の現在価値（時価）を査定。所有時計のポートフォリオ管理もできます。">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <span class="brand-mark">¥</span>
+        <span class="brand-name">資産価値査定</span>
+      </div>
+      <p class="brand-tagline">実売価格データに基づく資産アプレイザル</p>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1 class="hero-title">あなたの資産の「いま」の価値を。</h1>
+      <p class="hero-sub">品名・型番を入力するだけで、価格.com・楽天市場の販売価格から現在の市場価値を査定。型番で絞り込み、ポートフォリオに登録してブランド別に資産を管理できます。</p>
+
+      <form id="search-form" class="search-box" autocomplete="off">
+        <div class="search-row">
+          <input
+            type="text"
+            id="keyword"
+            name="keyword"
+            placeholder="例：ロレックス サブマリーナ ／ オメガ スピードマスター"
+            required
+          >
+          <button type="submit" id="search-btn">査定する</button>
+        </div>
+      </form>
+
+      <p class="search-examples">
+        人気の時計ブランド：
+        <button type="button" class="example-chip" data-q="ロレックス サブマリーナ">ロレックス サブマリーナ</button>
+        <button type="button" class="example-chip" data-q="ロレックス デイトジャスト">ロレックス デイトジャスト</button>
+        <button type="button" class="example-chip" data-q="オメガ スピードマスター">オメガ スピードマスター</button>
+        <button type="button" class="example-chip" data-q="チューダー ブラックベイ">チューダー ブラックベイ</button>
+        <button type="button" class="example-chip" data-q="IWC ポルトギーゼ">IWC ポルトギーゼ</button>
+        <button type="button" class="example-chip" data-q="カルティエ タンク">カルティエ タンク</button>
+        <button type="button" class="example-chip" data-q="ブライトリング ナビタイマー">ブライトリング ナビタイマー</button>
+        <button type="button" class="example-chip" data-q="パテックフィリップ ノーチラス">パテック ノーチラス</button>
+        <button type="button" class="example-chip" data-q="カシオ GMW-B5000D">G-SHOCK GMW-B5000D</button>
+        <button type="button" class="example-chip" data-q="シチズン アテッサ">シチズン アテッサ</button>
+      </p>
+    </div>
+  </section>
+
+  <main class="container">
+    <div id="status" class="status" hidden></div>
+
+    <section id="model-filter" class="model-filter" hidden>
+      <label for="model-select">型番で絞り込む：</label>
+      <select id="model-select"></select>
+      <span class="model-filter-hint" id="model-filter-hint"></span>
+    </section>
+
+    <section id="appraisal" class="appraisal" hidden>
+      <div class="section-head">
+        <h2 class="section-title">査定結果</h2>
+        <button type="button" id="add-portfolio-btn" class="btn-gold">＋ ポートフォリオに追加</button>
+      </div>
+      <div class="appraisal-grid">
+        <div class="appraisal-card primary">
+          <p class="card-label">推定市場価値（現在の実売中央値）</p>
+          <p class="card-value" id="market-value">—</p>
+          <p class="card-note" id="market-note"></p>
+        </div>
+      </div>
+
+      <div class="stats-bar" id="stats-bar">
+        <div class="stat"><span class="stat-label">最安値</span><span class="stat-value" id="stat-min">—</span></div>
+        <div class="stat"><span class="stat-label">中央値</span><span class="stat-value" id="stat-median">—</span></div>
+        <div class="stat"><span class="stat-label">平均値</span><span class="stat-value" id="stat-avg">—</span></div>
+        <div class="stat"><span class="stat-label">最高値</span><span class="stat-value" id="stat-max">—</span></div>
+        <div class="stat"><span class="stat-label">参照件数</span><span class="stat-value" id="stat-count">—</span></div>
+      </div>
+    </section>
+
+    <section id="portfolio" class="portfolio" hidden>
+      <div class="section-head">
+        <h2 class="section-title">マイ・ポートフォリオ</h2>
+        <button type="button" id="refresh-portfolio-btn" class="btn-ghost">⟳ 時価を更新</button>
+      </div>
+
+      <div class="appraisal-grid">
+        <div class="appraisal-card primary">
+          <p class="card-label">ポートフォリオ総資産（時価合計）</p>
+          <p class="card-value" id="pf-total">—</p>
+          <p class="card-note" id="pf-summary"></p>
+        </div>
+        <div class="appraisal-card pf-brands-card">
+          <p class="card-label">ブランド別内訳</p>
+          <div id="pf-brands" class="pf-brands"></div>
+        </div>
+      </div>
+
+      <div class="pf-table-wrap">
+        <table class="pf-table">
+          <thead>
+            <tr>
+              <th>品名（検索キーワード）</th>
+              <th>ブランド</th>
+              <th class="num">推定市場価値</th>
+              <th>参照元</th>
+              <th>価格取得日</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="pf-rows"></tbody>
+        </table>
+      </div>
+      <p class="pf-note">※ ポートフォリオはこのブラウザ内（localStorage）にのみ保存されます。</p>
+    </section>
+
+    <section id="listings" class="listings" hidden>
+      <h2 class="section-title">参照した販売価格 <span class="section-sub" id="sources-label"></span></h2>
+      <div id="listing-grid" class="listing-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>本査定は<a href="https://kakaku.com/" target="_blank" rel="noopener">価格.com</a>および<a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener">楽天市場</a>に掲載されている販売価格を基にした参考値であり、実際の売買価格を保証するものではありません。</p>
+      <p>各商品の価格・名称等の情報の権利は各掲載元および各販売店に帰属します。</p>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

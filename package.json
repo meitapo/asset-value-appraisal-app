@@ -1,0 +1,9 @@
+{
+  "name": "shisan-kachi-satei-app",
+  "version": "1.0.0",
+  "description": "楽天市場・Yahoo!ショッピングの実売価格を元に資産価値を査定するアプリ",
+  "private": true,
+  "scripts": {
+    "dev": "netlify dev"
+  }
+}
