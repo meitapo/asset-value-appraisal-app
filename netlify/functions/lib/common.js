@@ -1,4 +1,9 @@
-// search / buyback 両Functionで共有するユーティリティ
+// search 系 Functionで共有するユーティリティ
+
+const https = require("https");
+const tls = require("tls");
+const fs = require("fs");
+const path = require("path");
 
 const USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36";
@@ -17,6 +22,57 @@ async function fetchHtml(url, { encoding = "utf-8", timeoutMs = 6000 } = {}) {
   }
   const buffer = await res.arrayBuffer();
   return new TextDecoder(encoding).decode(buffer);
+}
+
+// 中間証明書を配信していないサイト（例: rolex-ringo.com）向け。
+// サーバーが証明書チェーンを完全に送らないため、同梱した Let's Encrypt の
+// 中間証明書をCAリストへ補完する。証明書検証そのものは通常どおり行う。
+let caBundle = null;
+function getCaBundle() {
+  if (!caBundle) {
+    const pem = fs.readFileSync(
+      path.join(__dirname, "letsencrypt-yr2.pem"),
+      "utf-8"
+    );
+    caBundle = [...tls.rootCertificates, pem];
+  }
+  return caBundle;
+}
+
+function fetchHtmlCompleteChain(url, { timeoutMs = 6000, redirects = 3 } = {}) {
+  return new Promise((resolve, reject) => {
+    const req = https.get(
+      url,
+      {
+        ca: getCaBundle(),
+        headers: {
+          "User-Agent": USER_AGENT,
+          "Accept": "text/html,application/xhtml+xml",
+          "Accept-Language": "ja",
+        },
+        timeout: timeoutMs,
+      },
+      (res) => {
+        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location && redirects > 0) {
+          res.resume();
+          const next = new URL(res.headers.location, url).href;
+          resolve(fetchHtmlCompleteChain(next, { timeoutMs, redirects: redirects - 1 }));
+          return;
+        }
+        if (res.statusCode !== 200) {
+          res.resume();
+          reject(new Error(`HTTP ${res.statusCode}`));
+          return;
+        }
+        const chunks = [];
+        res.on("data", (c) => chunks.push(c));
+        res.on("end", () => resolve(new TextDecoder("utf-8").decode(Buffer.concat(chunks))));
+        res.on("error", reject);
+      }
+    );
+    req.on("timeout", () => req.destroy(new Error("timeout")));
+    req.on("error", reject);
+  });
 }
 
 function parsePrice(text) {
@@ -39,29 +95,14 @@ function stripTags(str) {
     .trim();
 }
 
-function makeStats(items) {
-  const prices = items.map((i) => i.price).sort((a, b) => a - b);
-  const filtered = trimOutliers(prices);
-  return {
-    sampleCount: items.length,
-    usedCount: filtered.length,
-    min: filtered[0],
-    max: filtered[filtered.length - 1],
-    median: median(filtered),
-    average: Math.round(filtered.reduce((s, v) => s + v, 0) / filtered.length),
-  };
-}
-
-// 四分位範囲（IQR）の1.5倍を超える価格を外れ値として除外する
-function trimOutliers(sortedPrices) {
-  if (sortedPrices.length < 4) return sortedPrices;
+// 四分位範囲（IQR）の1.5倍を基準に外れ値除外の下限・上限を返す。
+// 件数が少ない場合は実質無制限（全件採用）にする。
+function iqrBounds(sortedPrices) {
+  if (sortedPrices.length < 4) return [-Infinity, Infinity];
   const q1 = quantile(sortedPrices, 0.25);
   const q3 = quantile(sortedPrices, 0.75);
   const iqr = q3 - q1;
-  const lower = q1 - 1.5 * iqr;
-  const upper = q3 + 1.5 * iqr;
-  const trimmed = sortedPrices.filter((p) => p >= lower && p <= upper);
-  return trimmed.length > 0 ? trimmed : sortedPrices;
+  return [q1 - 1.5 * iqr, q3 + 1.5 * iqr];
 }
 
 function quantile(sorted, q) {
@@ -72,13 +113,6 @@ function quantile(sorted, q) {
     return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
   }
   return sorted[base];
-}
-
-function median(sorted) {
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 === 0
-    ? Math.round((sorted[mid - 1] + sorted[mid]) / 2)
-    : sorted[mid];
 }
 
 function json(statusCode, body) {
@@ -92,4 +126,11 @@ function json(statusCode, body) {
   };
 }
 
-module.exports = { fetchHtml, parsePrice, stripTags, makeStats, json };
+module.exports = {
+  fetchHtml,
+  fetchHtmlCompleteChain,
+  parsePrice,
+  stripTags,
+  iqrBounds,
+  json,
+};

@@ -3,68 +3,169 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>資産価値査定 | あなたの資産の「いま」の価値を</title>
-  <meta name="description" content="品名・型番を入力するだけで、価格.comの販売価格からあなたの資産の現在価値（時価）を査定。所有時計のポートフォリオ管理もできます。">
+  <title>資産価値査定 | 資産の「いま」の価値を</title>
+  <meta name="description" content="時計・ブランド品の販売価格データから、あなたの資産の現在価値（時価）を査定。所有資産のポートフォリオ管理もできます。">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body data-view="search">
   <header class="site-header">
     <div class="container header-inner">
       <div class="brand">
         <span class="brand-mark">¥</span>
         <span class="brand-name">資産価値査定</span>
+        <span class="jp-badge" title="価格.com・楽天市場・Yahoo!ショッピング すべて国内ソース"><span class="hinomaru"></span>純国内ソース</span>
       </div>
-      <p class="brand-tagline">実売価格データに基づく資産アプレイザル</p>
+      <p class="brand-tagline">国内実売価格データに基づく資産アプレイザル</p>
     </div>
   </header>
 
-  <section class="hero">
+  <nav class="app-nav">
+    <div class="container app-nav-inner">
+      <button type="button" class="nav-tab" data-view="search">🔍 査定する</button>
+      <button type="button" class="nav-tab" data-view="portfolio">📊 ポートフォリオ<span id="nav-pf-count" class="nav-count" hidden></span></button>
+    </div>
+  </nav>
+
+  <section class="hero view-search">
+    <div class="hero-bg" id="hero-bg" aria-hidden="true">
+      <div class="hero-bg-cell"></div>
+      <div class="hero-bg-cell"></div>
+      <div class="hero-bg-cell"></div>
+    </div>
     <div class="container">
-      <h1 class="hero-title">あなたの資産の「いま」の価値を。</h1>
-      <p class="hero-sub">品名・型番を入力するだけで、価格.com・楽天市場の販売価格から現在の市場価値を査定。型番で絞り込み、ポートフォリオに登録してブランド別に資産を管理できます。</p>
+      <h1 class="hero-title">資産の「いま」の価値を。</h1>
+      <p class="hero-sub">価格.com・楽天市場・Yahoo!ショッピングの販売価格から市場価値を査定。</p>
 
-      <form id="search-form" class="search-box" autocomplete="off">
-        <div class="search-row">
-          <input
-            type="text"
-            id="keyword"
-            name="keyword"
-            placeholder="例：ロレックス サブマリーナ ／ オメガ スピードマスター"
-            required
-          >
-          <button type="submit" id="search-btn">査定する</button>
+      <p class="section-tagline">⌚ 時計</p>
+      <div class="guided-search">
+        <div class="guided-field">
+          <label for="brand-select">① ブランド</label>
+          <select id="brand-select">
+            <option value="">ブランドを選択</option>
+          </select>
         </div>
-      </form>
+        <div class="guided-field">
+          <label for="model-line-select">② モデル（時計）</label>
+          <select id="model-line-select" disabled>
+            <option value="">—</option>
+          </select>
+        </div>
+        <div class="guided-field">
+          <label for="model-select">③ 型番</label>
+          <select id="model-select" disabled>
+            <option value="">—</option>
+          </select>
+        </div>
+        <div class="guided-field">
+          <label for="color-select">④ 文字盤</label>
+          <select id="color-select" disabled>
+            <option value="">—</option>
+          </select>
+        </div>
+      </div>
 
-      <p class="search-examples">
-        人気の時計ブランド：
-        <button type="button" class="example-chip" data-q="ロレックス サブマリーナ">ロレックス サブマリーナ</button>
-        <button type="button" class="example-chip" data-q="ロレックス デイトジャスト">ロレックス デイトジャスト</button>
-        <button type="button" class="example-chip" data-q="オメガ スピードマスター">オメガ スピードマスター</button>
-        <button type="button" class="example-chip" data-q="チューダー ブラックベイ">チューダー ブラックベイ</button>
-        <button type="button" class="example-chip" data-q="IWC ポルトギーゼ">IWC ポルトギーゼ</button>
-        <button type="button" class="example-chip" data-q="カルティエ タンク">カルティエ タンク</button>
-        <button type="button" class="example-chip" data-q="ブライトリング ナビタイマー">ブライトリング ナビタイマー</button>
-        <button type="button" class="example-chip" data-q="パテックフィリップ ノーチラス">パテック ノーチラス</button>
-        <button type="button" class="example-chip" data-q="カシオ GMW-B5000D">G-SHOCK GMW-B5000D</button>
-        <button type="button" class="example-chip" data-q="シチズン アテッサ">シチズン アテッサ</button>
-      </p>
+      <p class="section-tagline">💎 ハイブランド</p>
+      <div class="guided-search" id="jewelry-cascade">
+        <div class="guided-field">
+          <label for="jbrand-select">① ブランド</label>
+          <select id="jbrand-select">
+            <option value="">ブランドを選択</option>
+          </select>
+        </div>
+        <div class="guided-field">
+          <label for="jcat-select">② カテゴリ</label>
+          <select id="jcat-select" disabled>
+            <option value="">—</option>
+          </select>
+        </div>
+        <div class="guided-field" id="jmodel-field" hidden>
+          <label for="jmodel-select">③ モデル</label>
+          <select id="jmodel-select" disabled>
+            <option value="">—</option>
+          </select>
+        </div>
+        <div class="guided-field" id="jsize-field" hidden>
+          <label for="jsize-select">④ サイズ</label>
+          <select id="jsize-select" disabled>
+            <option value="">—</option>
+          </select>
+        </div>
+        <div class="guided-field" id="jcolor-field" hidden>
+          <label for="jcolor-select">⑤ 色</label>
+          <select id="jcolor-select" disabled>
+            <option value="">—</option>
+          </select>
+        </div>
+        <div class="guided-field" id="jstamp-field" hidden>
+          <label for="jstamp-select">⑥ 刻印（製造年）</label>
+          <select id="jstamp-select" disabled>
+            <option value="">—</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="section-tagline">🚗 車</p>
+      <div class="guided-search" id="car-cascade">
+        <div class="guided-field">
+          <label for="cbrand-select">① メーカー</label>
+          <select id="cbrand-select">
+            <option value="">メーカーを選択</option>
+          </select>
+        </div>
+        <div class="guided-field">
+          <label for="cmodel-select">② 車種</label>
+          <select id="cmodel-select" disabled>
+            <option value="">—</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="section-tagline">🥇 金・プラチナ・銀（実物資産）</p>
+      <div class="guided-search" id="metal-cascade">
+        <div class="guided-field">
+          <label for="metal-select">① 種類</label>
+          <select id="metal-select">
+            <option value="">選択してください</option>
+            <option value="金">金（ゴールド）</option>
+            <option value="プラチナ">プラチナ</option>
+            <option value="銀">銀（シルバー）</option>
+          </select>
+        </div>
+        <div class="guided-field" id="weight-field" hidden>
+          <label for="weight-input">② 重量（g）</label>
+          <input type="number" id="weight-input" inputmode="decimal" placeholder="例：100" min="0" step="0.1">
+        </div>
+      </div>
+
+      <p class="section-tagline">🔍 キーワードで直接検索</p>
+      <div class="keyword-search">
+        <input type="search" id="keyword-input" placeholder="例：ロレックス デイトナ 126500LN／クロムハーツ ダガーリング" enterkeyhint="search">
+        <button type="button" id="keyword-btn" class="btn-gold">査定する</button>
+      </div>
+
     </div>
   </section>
 
   <main class="container">
-    <div id="status" class="status" hidden></div>
+    <div id="status" class="status view-search" hidden></div>
 
-    <section id="model-filter" class="model-filter" hidden>
-      <label for="model-select">型番で絞り込む：</label>
-      <select id="model-select"></select>
-      <span class="model-filter-hint" id="model-filter-hint"></span>
+    <section id="nostock" class="nostock view-search" hidden>
+      <p class="nostock-title">現在この条件の出品が見つかりませんでした。</p>
+      <p class="nostock-sub" id="nostock-target"></p>
+      <p class="nostock-note">所有している場合は、価格を手入力してポートフォリオに登録できます（空欄でも登録可。後で「価格を更新」すると出品が出た時に自動取得します）。</p>
+      <div class="nostock-row">
+        <input type="text" id="nostock-price" inputmode="numeric" placeholder="推定価格（任意・円）例：8000000">
+        <button type="button" id="nostock-add" class="btn-gold">＋ ポートフォリオに追加</button>
+      </div>
     </section>
 
-    <section id="appraisal" class="appraisal" hidden>
+    <section id="appraisal" class="appraisal view-search" hidden>
       <div class="section-head">
         <h2 class="section-title">査定結果</h2>
-        <button type="button" id="add-portfolio-btn" class="btn-gold">＋ ポートフォリオに追加</button>
+        <span class="pf-head-actions">
+          <button type="button" id="add-wishlist-btn" class="btn-ghost">☆ 欲しいものに追加</button>
+          <button type="button" id="add-portfolio-btn" class="btn-gold">＋ ポートフォリオに追加</button>
+        </span>
       </div>
       <div class="appraisal-grid">
         <div class="appraisal-card primary">
@@ -83,10 +184,44 @@
       </div>
     </section>
 
-    <section id="portfolio" class="portfolio" hidden>
+    <section id="ringo" class="ringo view-search" hidden>
+      <h2 class="section-title">参考買取相場（ロレックス）<span class="section-sub" id="ringo-source"></span></h2>
+      <div class="pf-table-wrap">
+        <table class="pf-table ringo-table">
+          <thead>
+            <tr>
+              <th>モデル</th>
+              <th>型番</th>
+              <th class="num">定価</th>
+              <th class="num">未使用品買取相場</th>
+              <th class="num">中古買取相場</th>
+            </tr>
+          </thead>
+          <tbody id="ringo-rows"></tbody>
+        </table>
+      </div>
+      <p class="pf-note">出典：<a href="https://rolex-ringo.com/" target="_blank" rel="noopener">りんごロレックスマラソン</a>（買取相場の参考値。実売価格とは異なります）</p>
+    </section>
+
+    <section id="news" class="news view-search" hidden>
+      <h2 class="section-title">📰 新着ニュース <span class="section-sub" id="news-sub"></span></h2>
+      <div id="news-list" class="news-list"></div>
+    </section>
+
+    <input type="file" id="photo-input" accept="image/*" hidden>
+
+    <section id="listings" class="listings view-search" hidden>
+      <h2 class="section-title">参照した販売価格 <span class="section-sub" id="sources-label"></span></h2>
+      <div id="listing-grid" class="listing-grid"></div>
+    </section>
+
+    <section id="portfolio" class="portfolio view-portfolio" hidden>
       <div class="section-head">
         <h2 class="section-title">マイ・ポートフォリオ</h2>
-        <button type="button" id="refresh-portfolio-btn" class="btn-ghost">⟳ 時価を更新</button>
+        <span class="pf-head-actions">
+          <button type="button" id="manual-add-btn" class="btn-ghost">＋ 手動で追加</button>
+          <button type="button" id="refresh-portfolio-btn" class="btn-ghost">⟳ 時価を更新</button>
+        </span>
       </div>
 
       <div class="appraisal-grid">
@@ -99,35 +234,87 @@
           <p class="card-label">ブランド別内訳</p>
           <div id="pf-brands" class="pf-brands"></div>
         </div>
+        <div class="appraisal-card pf-brands-card">
+          <p class="card-label">ジャンル別内訳</p>
+          <div id="pf-genres" class="pf-brands"></div>
+        </div>
       </div>
 
       <div class="pf-table-wrap">
         <table class="pf-table">
           <thead>
             <tr>
-              <th>品名（検索キーワード）</th>
+              <th>写真</th>
+              <th>品名</th>
               <th>ブランド</th>
+              <th class="num">購入価格</th>
               <th class="num">推定市場価値</th>
-              <th>参照元</th>
-              <th>価格取得日</th>
+              <th class="num">含み益</th>
+              <th>価格更新日</th>
+              <th>購入日</th>
+              <th>状態</th>
               <th></th>
             </tr>
           </thead>
           <tbody id="pf-rows"></tbody>
         </table>
       </div>
-      <p class="pf-note">※ ポートフォリオはこのブラウザ内（localStorage）にのみ保存されます。</p>
+
+      <div id="pf-sold-block" hidden>
+        <h3 class="pf-sold-title">売却済み</h3>
+        <div class="pf-table-wrap">
+          <table class="pf-table">
+            <thead>
+              <tr>
+                <th>写真</th>
+                <th>品名</th>
+                <th>ブランド</th>
+                <th class="num">購入価格</th>
+                <th class="num">推定市場価値</th>
+                <th class="num">売却価格</th>
+                <th class="num">損益</th>
+                <th>購入日</th>
+                <th>売却日</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="pf-sold-rows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <p class="pf-note">※ ポートフォリオ（写真含む）はこのブラウザ内（localStorage）にのみ保存されます。</p>
     </section>
 
-    <section id="listings" class="listings" hidden>
-      <h2 class="section-title">参照した販売価格 <span class="section-sub" id="sources-label"></span></h2>
-      <div id="listing-grid" class="listing-grid"></div>
+    <section id="wishlist" class="portfolio view-portfolio" hidden>
+      <div class="section-head">
+        <h2 class="section-title">☆ 欲しいものリスト</h2>
+        <button type="button" id="refresh-wishlist-btn" class="btn-ghost">⟳ 時価を更新</button>
+      </div>
+      <div class="pf-table-wrap">
+        <table class="pf-table">
+          <thead>
+            <tr>
+              <th>写真</th>
+              <th>品名</th>
+              <th>ブランド</th>
+              <th class="num">登録時の時価</th>
+              <th class="num">現在の時価</th>
+              <th class="num">変動</th>
+              <th>登録日</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="wish-rows"></tbody>
+        </table>
+      </div>
+      <p class="pf-note">※ 「⟳ 時価を更新」で現在価格を取得し、登録時からの値動きを確認できます。購入したら「購入→ポートフォリオへ」で移動できます。</p>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container">
-      <p>本査定は<a href="https://kakaku.com/" target="_blank" rel="noopener">価格.com</a>および<a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener">楽天市場</a>に掲載されている販売価格を基にした参考値であり、実際の売買価格を保証するものではありません。</p>
+      <p><span class="hinomaru"></span> 本査定はすべて国内ソース（<a href="https://kakaku.com/" target="_blank" rel="noopener">価格.com</a>・<a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener">楽天市場</a>・<a href="https://shopping.yahoo.co.jp/" target="_blank" rel="noopener">Yahoo!ショッピング</a>）の販売価格を基にした参考値であり、実際の売買価格を保証するものではありません。</p>
       <p>各商品の価格・名称等の情報の権利は各掲載元および各販売店に帰属します。</p>
     </div>
   </footer>

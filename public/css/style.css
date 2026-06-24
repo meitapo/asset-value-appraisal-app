@@ -67,6 +67,43 @@ body {
   letter-spacing: 0.08em;
 }
 
+.jp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  color: #333;
+  background: #fff;
+  border: 1px solid #e2c9cf;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* 日の丸（白地に赤丸） */
+.hinomaru {
+  display: inline-block;
+  width: 18px;
+  height: 12px;
+  background: #fff;
+  border: 1px solid #d8d8d8;
+  border-radius: 2px;
+  position: relative;
+}
+
+.hinomaru::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 7px;
+  height: 7px;
+  background: #bc002d;
+  border-radius: 50%;
+}
+
 .brand-tagline {
   color: var(--text-muted);
   font-size: 12px;
@@ -75,12 +112,46 @@ body {
 
 /* Hero */
 .hero {
+  position: relative;
+  overflow: hidden;
   padding: 64px 0 48px;
   background:
     radial-gradient(ellipse 70% 50% at 50% 0%, rgba(201, 162, 75, 0.10), transparent),
     var(--bg);
   text-align: center;
 }
+
+/* 注目3モデルの写真をヒーロー背景に */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  z-index: 0;
+}
+
+.hero-bg-cell {
+  flex: 1;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+.hero-bg-cell.loaded { opacity: 0.6; }
+
+/* 文字を読みやすくするための覆い（中央だけ少し濃く） */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 42%, rgba(14, 19, 24, 0.62), rgba(14, 19, 24, 0.35)),
+    linear-gradient(180deg, rgba(14, 19, 24, 0.3), rgba(14, 19, 24, 0.55));
+}
+
+.hero .container { position: relative; z-index: 1; }
 
 .hero-title {
   font-size: clamp(26px, 4.5vw, 40px);
@@ -195,30 +266,190 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Model filter (型番ドロップダウン) */
-.model-filter {
+/* Guided search (ブランド→モデル→型番→文字盤の段階選択) */
+.guided-search {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: 820px;
+  margin: 0 auto 16px;
+  text-align: left;
+}
+
+.guided-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+/* display:flex が hidden 属性より優先されるため明示的に隠す */
+.guided-field[hidden] {
+  display: none;
+}
+
+.guided-field label {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: 0.04em;
+}
+
+.guided-field select {
+  padding: 12px 14px;
+  font-size: 15px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.guided-field select:focus { border-color: var(--gold); outline: none; }
+.guided-field select:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.section-tagline {
+  max-width: 820px;
+  margin: 22px auto 10px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--gold-light);
+  text-align: left;
+}
+
+.guided-search--2col {
+  grid-template-columns: 1fr 1fr;
+  max-width: 560px;
+}
+
+/* ブランド品・車カスケードは時計と同じ4列グリッド・左揃え（項目が少なければ左に寄る） */
+#jewelry-cascade,
+#car-cascade {
+  max-width: 820px;
+}
+
+.guided-divider {
+  max-width: 820px;
+  margin: 22px auto 14px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  position: relative;
+}
+.guided-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--border);
+  z-index: 0;
+}
+.guided-divider span {
+  position: relative;
+  z-index: 1;
+  background: var(--bg);
+  padding: 0 14px;
+}
+
+@media (max-width: 720px) {
+  .guided-search { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 440px) {
+  .guided-search { grid-template-columns: 1fr; }
+}
+
+/* Featured watches (TOP写真) */
+.featured-heading {
+  margin: 32px 0 14px;
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  color: var(--gold-light);
+}
+
+.featured {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.featured-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  color: var(--text);
+  transition: all 0.15s;
+}
+
+.featured-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.featured-img {
+  width: 100%;
+  height: 180px;
+  object-fit: contain;
+  background: #fff;
+}
+
+.featured-img.placeholder {
   display: flex;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin: 32px 0 8px;
-  padding: 16px 20px;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.featured-body { padding: 12px 14px; }
+
+.featured-label {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.featured-price {
+  font-size: 14px;
+  color: var(--gold-light);
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .featured { grid-template-columns: 1fr; }
+}
+
+/* Ringo (ロレックス参考買取相場) */
+.ringo { margin: 32px 0; }
+.ringo-table th, .ringo-table td { white-space: nowrap; }
+
+/* No-stock add panel */
+.nostock {
+  margin: 32px 0;
+  padding: 22px 24px;
   background: var(--bg-card);
   border: 1px solid var(--gold);
   border-radius: var(--radius);
 }
 
-.model-filter label {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--gold-light);
-}
+.nostock-title { font-size: 16px; font-weight: 700; color: var(--gold-light); }
+.nostock-sub { font-size: 15px; margin-top: 4px; }
+.nostock-note { font-size: 13px; color: var(--text-muted); margin: 10px 0 14px; }
 
-.model-filter select {
+.nostock-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.nostock-row input {
   flex: 1;
-  min-width: 220px;
-  max-width: 420px;
-  padding: 10px 14px;
+  min-width: 200px;
+  padding: 12px 14px;
   font-size: 15px;
   background: var(--bg);
   border: 1px solid var(--border);
@@ -226,12 +457,7 @@ body {
   color: var(--text);
 }
 
-.model-filter select:focus { border-color: var(--gold); outline: none; }
-
-.model-filter-hint {
-  font-size: 12px;
-  color: var(--text-muted);
-}
+.nostock-row input:focus { border-color: var(--gold); outline: none; }
 
 /* Appraisal */
 .appraisal { margin: 40px 0; }
@@ -378,6 +604,27 @@ body {
   flex: 1;
 }
 
+.listing-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.badge {
+  font-size: 10.5px;
+  line-height: 1.6;
+  padding: 1px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.badge-dial { color: var(--text); border-color: var(--gold-light); background: rgba(201,162,75,0.12); }
+.badge-cond { color: var(--gold-light); border-color: var(--gold); }
+.badge-acc { color: var(--green); border-color: rgba(63, 191, 127, 0.5); }
+.badge-year { color: var(--text-muted); }
+
 .listing-price {
   font-size: 18px;
   font-weight: 700;
@@ -387,8 +634,233 @@ body {
 .listing-meta {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 11px;
   color: var(--text-muted);
+}
+
+/* 出品をそのままポートフォリオ/欲しいものに追加するボタン */
+.listing-btn-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.listing-add {
+  flex: 1;
+  padding: 6px 8px;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--gold-light);
+  cursor: pointer;
+}
+.listing-add:hover {
+  border-color: var(--gold-light);
+}
+.listing-add:disabled {
+  color: var(--text-muted);
+  cursor: default;
+  border-color: var(--border);
+}
+
+/* ポートフォリオの推定市場価値（クリックで手動修正） */
+.pf-price-cell {
+  cursor: pointer;
+}
+.pf-price-pen {
+  font-size: 10px;
+  color: var(--text-muted);
+  opacity: 0;
+}
+.pf-price-cell:hover .pf-price-pen {
+  opacity: 1;
+}
+.pf-manual {
+  font-size: 10px;
+  color: var(--gold-light);
+  border: 1px solid var(--gold-light);
+  border-radius: 4px;
+  padding: 0 4px;
+  vertical-align: middle;
+}
+
+/* 並び替え（▲▼）。スマホでも押しやすいサイズを確保 */
+.pf-order {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+.btn-order {
+  min-width: 28px;
+  min-height: 20px;
+  padding: 1px 6px;
+  font-size: 9px;
+  line-height: 1;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.btn-order:hover {
+  color: var(--gold-light);
+  border-color: var(--gold-light);
+}
+
+.pf-head-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* 欲しいものリストの価格変動 */
+.delta-up { color: #4ade80; }
+.delta-down { color: #f87171; }
+
+/* 常時表示のタブナビ（査定 ⇄ ポートフォリオ） */
+.app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+.app-nav-inner {
+  display: flex;
+  gap: 8px;
+  padding: 8px 0;
+}
+.nav-tab {
+  flex: 1;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.nav-tab:hover { color: var(--text); }
+.nav-tab.active {
+  background: var(--gold);
+  color: #1a1408;
+  border-color: var(--gold);
+}
+.nav-count {
+  display: inline-block;
+  min-width: 18px;
+  margin-left: 6px;
+  padding: 0 6px;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  border-radius: 9px;
+  background: var(--gold);
+  color: #1a1408;
+}
+.nav-tab.active .nav-count {
+  background: #1a1408;
+  color: var(--gold);
+}
+
+/* ビュー切り替え：非アクティブ側を隠す */
+body[data-view="portfolio"] .view-search { display: none !important; }
+body[data-view="search"] .view-portfolio { display: none !important; }
+
+/* 貴金属カスケード（種類・純度・重量の3列） */
+#metal-cascade {
+  max-width: 820px;
+}
+#metal-cascade input[type="number"] {
+  padding: 12px 14px;
+  font-size: 15px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+}
+#metal-cascade input[type="number"]:focus {
+  border-color: var(--gold);
+  outline: none;
+}
+
+/* 新着ニュース */
+.news { margin: 28px 0; }
+.news-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.news-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 11px 6px;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text);
+  transition: background 0.12s;
+}
+.news-item:hover { background: rgba(255, 255, 255, 0.03); }
+.news-date {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--gold-light);
+  font-variant-numeric: tabular-nums;
+}
+.news-body { flex: 1; min-width: 0; }
+.news-title {
+  font-size: 14px;
+  line-height: 1.5;
+}
+.news-source {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.news-empty {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 8px 6px;
+}
+
+/* 売却済みの小見出し */
+.pf-sold-title {
+  margin: 28px 0 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* キーワード直接検索 */
+.keyword-search {
+  display: flex;
+  gap: 10px;
+  max-width: 820px;
+  margin: 0 auto 16px;
+}
+.keyword-search input {
+  flex: 1;
+  padding: 12px 14px;
+  font-size: 15px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+}
+.keyword-search input:focus {
+  border-color: var(--gold);
+  outline: none;
+}
+@media (max-width: 440px) {
+  .keyword-search { flex-direction: column; }
 }
 
 .listing-source {
@@ -396,6 +868,9 @@ body {
   border-radius: 999px;
   border: 1px solid var(--border);
 }
+
+.listing-more { color: var(--gold-light); opacity: 0; transition: opacity 0.15s; }
+.listing-card:hover .listing-more { opacity: 1; }
 
 /* Section head with action button */
 .section-head {
@@ -478,23 +953,23 @@ body {
 
 .pf-table-wrap {
   margin-top: 16px;
-  overflow-x: auto;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  overflow: hidden;
 }
 
 .pf-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 13px;
   background: var(--bg-card);
 }
 
 .pf-table th, .pf-table td {
-  padding: 12px 16px;
+  padding: 10px 12px;
   text-align: left;
   border-bottom: 1px solid var(--border);
-  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .pf-table thead th {
@@ -506,7 +981,9 @@ body {
 
 .pf-table tbody tr:last-child td { border-bottom: none; }
 
-.pf-table .num { text-align: right; }
+.pf-table .num { text-align: right; white-space: nowrap; }
+.pf-updated { white-space: nowrap; color: var(--text-muted); font-size: 12px; }
+.pf-untracked { color: var(--text-muted); font-weight: 400; font-size: 12px; }
 .pf-table .strong { color: var(--gold-light); font-weight: 700; }
 
 .btn-remove {
@@ -525,6 +1002,95 @@ body {
   border-color: var(--red);
   color: var(--red);
 }
+
+/* Portfolio: photo / status / actions */
+.pf-photo-cell { width: 56px; }
+
+.pf-photo-wrap {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+}
+
+.pf-photo {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  display: block;
+}
+
+.pf-photo-edit {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.pf-photo-wrap:hover .pf-photo-edit { opacity: 1; }
+
+.pf-photo.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 20px;
+}
+
+.pf-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.pf-badge.owned { color: var(--green); border: 1px solid var(--green); }
+.pf-badge.sold { color: var(--text-muted); border: 1px solid var(--border); }
+
+.pf-row-sold { opacity: 0.55; }
+
+.pf-actions { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+.btn-mini {
+  padding: 4px 10px;
+  font-size: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.btn-mini:hover { border-color: var(--gold); color: var(--gold-light); }
+
+.pf-date {
+  padding: 4px 6px;
+  font-size: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  color-scheme: dark;
+  max-width: 130px;
+}
+
+.pf-sold-date { display: block; margin-top: 4px; }
+.pf-sold-price { display: block; margin-top: 4px; color: var(--text-muted); font-size: 12px; }
 
 .pf-note {
   margin-top: 10px;
