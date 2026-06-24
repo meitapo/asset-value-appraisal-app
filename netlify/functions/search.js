@@ -171,7 +171,7 @@ exports.handler = async (event) => {
     ),
     // 各出品に判定した文字盤色を付ける（名前のベゼル色と混同しないように一覧で明示）
     // ブランド品の場合、サイズ・刻印年号も抽出。一覧は価格の高い順に表示する
-    items: [...display].sort((a, b) => b.price - a.price).slice(0, 30).map((i) => {
+    items: [...display].sort((a, b) => b.price - a.price).slice(0, 20).map((i) => {
       const item = { ...i, dial: detectColor(i.name) };
       if (modelJewelryEff) {
         item.jewelryDetails = extractJewelryDetails(i.name, brandJewelry, categoryJewelry, modelJewelryEff);
@@ -749,9 +749,16 @@ async function searchKakaku(keyword) {
     const price = Number(priceMatch[1].replace(/,/g, ""));
     if (!Number.isFinite(price) || price <= 0) continue;
 
-    const imageMatch = block.match(
-      /<img src="([^"]+)"[^>]*class="p-item_visual_entity"/
-    );
+    // 商品画像は遅延読み込み（src="loading.gif" data-src="実URL"）のことが多い。
+    // imgタグ全体から data-src → data-original → src の順で実URLを拾い、
+    // プレースホルダ（loading.gif / noimage）は除外する。
+    const imgTag = (block.match(/<img[^>]*p-item_visual_entity[^>]*>/) || [])[0] || "";
+    let image =
+      (imgTag.match(/data-src="([^"]+)"/) || [])[1] ||
+      (imgTag.match(/data-original="([^"]+)"/) || [])[1] ||
+      (imgTag.match(/\bsrc="([^"]+)"/) || [])[1] ||
+      null;
+    if (image && /loading\.gif|noimage/i.test(image)) image = null;
     const makerMatch = block.match(/<p class="p-item_maker">([^<]*)<\/p>/);
     const categoryMatch = block.match(/<p class="p-item_category">([^<]*)<\/p>/);
 
@@ -776,7 +783,7 @@ async function searchKakaku(keyword) {
       maker,
       price,
       url,
-      image: imageMatch ? imageMatch[1] : null,
+      image,
       category: categoryMatch ? categoryMatch[1].trim() : "",
     });
   }

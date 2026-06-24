@@ -1,0 +1,276 @@
+{
+  "brand": "オーデマピゲ",
+  "source": "カミネ（正規販売店）",
+  "sourceUrl": "https://www.kamine.co.jp",
+  "updatedAt": "2026-06-24",
+  "total": 36,
+  "groups": [
+    {
+      "name": "ロイヤルオーク",
+      "rows": [
+        {
+          "label": "ロイヤル オーク オートマティック",
+          "ref": "15551OR.ZZ.1356OR.04",
+          "retail": 10725000,
+          "url": "https://www.kamine.co.jp/item/41012",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/15551OR.ZZ.1356OR.04_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オートマチック 77451OR.ZZ.1361OR.03",
+          "ref": "77451OR.ZZ.1361OR.03",
+          "retail": 9955000,
+          "url": "https://www.kamine.co.jp/item/34361/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/1411669753641015a36322f964163865-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オートマティック",
+          "ref": "77350CE.OO.1266CE.03.A",
+          "retail": 8580000,
+          "url": "https://www.kamine.co.jp/item/41022",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/77350CE.OO.1266CE.03.A_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク ミニ クォーツ",
+          "ref": "67630OR.OO.1312OR.01-B",
+          "retail": 6325000,
+          "url": "https://www.kamine.co.jp/item/69464",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/39467664969f41bcb3200e938786216-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク クロノグラフ",
+          "ref": "26240ST.OO.1320ST.05",
+          "retail": 6105000,
+          "url": "https://www.kamine.co.jp/item/41008",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/26240ST.OO.1320ST.05_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク ミニ フロステッドゴールド クォーツ 67630BA.GG.1312BA.01-B",
+          "ref": "67630BA.GG.1312BA.01-B",
+          "retail": 5665000,
+          "url": "https://www.kamine.co.jp/item/41024/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/67630BA.GG.1312BA.01-B_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク ミニ フロステッドゴールド クォーツ 67630BC.GG.1312BC.01-B",
+          "ref": "67630BC.GG.1312BC.01-B",
+          "retail": 5665000,
+          "url": "https://www.kamine.co.jp/item/41025/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/67630BC.GG.1312BC.01-B_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク ミニ フロステッドゴールド クォーツ 67630OR.GG.1312OR.01-B",
+          "ref": "67630OR.GG.1312OR.01-B",
+          "retail": 5665000,
+          "url": "https://www.kamine.co.jp/item/41026/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/67630OR.GG.1312OR.01-B_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク ミニ クォーツ",
+          "ref": "67630BA.OO.1312BA.03-B",
+          "retail": 5280000,
+          "url": "https://www.kamine.co.jp/item/69463",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/76732660369f41870b6472353917933-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オートマティック",
+          "ref": "15551ST.ZZ.1356ST.05",
+          "retail": 5170000,
+          "url": "https://www.kamine.co.jp/item/41011",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/15551ST.ZZ.1356ST.05_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オートマティック",
+          "ref": "77451ST.ZZ.1361ST.04",
+          "retail": 4785000,
+          "url": "https://www.kamine.co.jp/item/41020",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/77451ST.ZZ.1361ST.04_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オートマティック",
+          "ref": "77450SR.OO.1361SR.03",
+          "retail": 4565000,
+          "url": "https://www.kamine.co.jp/item/41021",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/77450SR.OO.1361SR.03_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オートマティック",
+          "ref": "15510ST.OO.1320ST.06",
+          "retail": 4400000,
+          "url": "https://www.kamine.co.jp/item/41009",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/15510ST.OO.1320ST.06_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オートマティック",
+          "ref": "15550ST.OO.1356ST.06",
+          "retail": 4180000,
+          "url": "https://www.kamine.co.jp/item/41010",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/15550ST.OO.1356ST.06_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オートマチック 77450ST.OO.1361ST.02",
+          "ref": "77450ST.OO.1361ST.02",
+          "retail": 4015000,
+          "url": "https://www.kamine.co.jp/item/34362/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/186451410641015729bf14081120622-600x600.jpg"
+        }
+      ]
+    },
+    {
+      "name": "ロイヤルオーク オフショア",
+      "rows": [
+        {
+          "label": "ロイヤル オーク オフショア クロノグラフ",
+          "ref": "26231OR.ZZ.A085CA.01",
+          "retail": 9515000,
+          "url": "https://www.kamine.co.jp/item/35680",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/129643971465dd854a82227106411376-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オフショア クロノグラフ",
+          "ref": "26420CD.OO.A029VE.01",
+          "retail": 8855000,
+          "url": "https://www.kamine.co.jp/item/69465",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/57266563769f42183a8f55556730239-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オフショア オートマティック",
+          "ref": "77605OK.OO.A101CA.01",
+          "retail": 7535000,
+          "url": "https://www.kamine.co.jp/item/41027",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/77605OK.OO.A101CA.01_1-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オフショア クロノグラフ",
+          "ref": "26420IO.OO.A402CA.01",
+          "retail": 6435000,
+          "url": "https://www.kamine.co.jp/item/69466",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/146868114569f423e1b7dc2139281493-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オフショア クロノグラフ",
+          "ref": "26231ST.ZZ.A178CA.01",
+          "retail": 6325000,
+          "url": "https://www.kamine.co.jp/item/35679",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/205824387965dd84e8ef98b295905640-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オフショア ダイバー",
+          "ref": "15720ST.OO.A403CA.01",
+          "retail": 4510000,
+          "url": "https://www.kamine.co.jp/item/69469",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/18808380766a004da4542cb809690130-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オフショア ダイバー",
+          "ref": "15720ST.OO.A355CA.01",
+          "retail": 4510000,
+          "url": "https://www.kamine.co.jp/item/69468",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/72006610869ff19b04fc31988057977-600x600.jpg"
+        },
+        {
+          "label": "ロイヤル オーク オフショア ダイバー",
+          "ref": "15720ST.OO.A010CA.01",
+          "retail": 4510000,
+          "url": "https://www.kamine.co.jp/item/69467",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/158135229769ff17d6ba2d3777022322-600x600.jpg"
+        }
+      ]
+    },
+    {
+      "name": "コード11.59",
+      "rows": [
+        {
+          "label": "CODE 11.59 バイ クロノグラフ 26393OR.OO.A056KB.01",
+          "ref": "26393OR.OO.A056KB.01",
+          "retail": 7535000,
+          "url": "https://www.kamine.co.jp/item/41003/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/26393OR.OO.A056KB.01_1-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ クロノグラフ 26393OR.OO.A348KB.01",
+          "ref": "26393OR.OO.A348KB.01",
+          "retail": 7535000,
+          "url": "https://www.kamine.co.jp/item/41004/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/26393OR.OO.A348KB.01_1-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ クロノグラフ 26393NR.OO.A002KB.02",
+          "ref": "26393NR.OO.A002KB.02",
+          "retail": 7535000,
+          "url": "https://www.kamine.co.jp/item/41005/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/26393NR.OO.A002KB.02_1-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ クロノグラフ 26393ST.OO.A009KB.01",
+          "ref": "26393ST.OO.A009KB.01",
+          "retail": 5500000,
+          "url": "https://www.kamine.co.jp/item/41007/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/26393ST.OO.A009KB.01_1-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ オートマティック",
+          "ref": "15210OR.OO.A056KB.01",
+          "retail": 5390000,
+          "url": "https://www.kamine.co.jp/item/41001",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/15210OR.OO.A056KB.01_1-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ オートマティック",
+          "ref": "15210OR.OO.A348KB.01",
+          "retail": 5390000,
+          "url": "https://www.kamine.co.jp/item/41002",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/15210OR.OO.A348KB.01_1-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ オートマティック",
+          "ref": "77410OR.OO.A342CR.01",
+          "retail": 5170000,
+          "url": "https://www.kamine.co.jp/item/69490",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/19215714306a0fdebd1f0a5945088134-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ オートマティック",
+          "ref": "77410OR.OO.A402VE.01",
+          "retail": 5170000,
+          "url": "https://www.kamine.co.jp/item/69457",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/188324950869f1c543e25af758387220-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ オートマティック",
+          "ref": "77410OR.OO.A127CR.01",
+          "retail": 5170000,
+          "url": "https://www.kamine.co.jp/item/69456",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/72002901269f1c0ff3a5ca886634850-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ オートマティック",
+          "ref": "77410OR.OO.A344CR.01",
+          "retail": 5170000,
+          "url": "https://www.kamine.co.jp/item/41019",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/77410OR.OO.A344CR.01_1-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ オートマティック 77410OR.OO.A623CR.01",
+          "ref": "77410OR.OO.A623CR.01",
+          "retail": 5170000,
+          "url": "https://www.kamine.co.jp/item/35682/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/130649230865dd870812acb479782785-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ オートマティック 77410OR.OO.A825CR.01",
+          "ref": "77410OR.OO.A825CR.01",
+          "retail": 5170000,
+          "url": "https://www.kamine.co.jp/item/35681/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/113125362265deaba22a245529790735-600x600.jpg"
+        },
+        {
+          "label": "CODE 11.59 バイ オートマティック 15210ST.OO.A009KB.01",
+          "ref": "15210ST.OO.A009KB.01",
+          "retail": 3960000,
+          "url": "https://www.kamine.co.jp/item/41006/",
+          "image": "https://www.kamine.co.jp/uploads/images/products/images/15210ST.OO.A009KB.01_1-600x600.jpg"
+        }
+      ]
+    }
+  ]
+}

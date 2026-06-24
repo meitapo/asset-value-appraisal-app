@@ -21,8 +21,3 @@
   from = "/api/cars"
   to = "/.netlify/functions/cars"
   status = 200
-
-[[redirects]]
-  from = "/api/news"
-  to = "/.netlify/functions/news"
-  status = 200

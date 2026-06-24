@@ -13,7 +13,7 @@
       <div class="brand">
         <span class="brand-mark">¥</span>
         <span class="brand-name">資産価値査定</span>
-        <span class="jp-badge" title="価格.com・楽天市場・Yahoo!ショッピング すべて国内ソース"><span class="hinomaru"></span>純国内ソース</span>
+        <span class="jp-badge" title="価格.com・楽天市場・Yahoo!ショッピング・カーセンサー・田中貴金属 すべて国内ソース"><span class="hinomaru"></span>純国内ソース</span>
       </div>
       <p class="brand-tagline">国内実売価格データに基づく資産アプレイザル</p>
     </div>
@@ -22,6 +22,7 @@
   <nav class="app-nav">
     <div class="container app-nav-inner">
       <button type="button" class="nav-tab" data-view="search">🔍 査定する</button>
+      <button type="button" class="nav-tab" data-view="pricelist">📋 現行定価表</button>
       <button type="button" class="nav-tab" data-view="portfolio">📊 ポートフォリオ<span id="nav-pf-count" class="nav-count" hidden></span></button>
     </div>
   </nav>
@@ -34,7 +35,7 @@
     </div>
     <div class="container">
       <h1 class="hero-title">資産の「いま」の価値を。</h1>
-      <p class="hero-sub">価格.com・楽天市場・Yahoo!ショッピングの販売価格から市場価値を査定。</p>
+      <p class="hero-sub">国内の販売・中古相場データから、資産の「いま」の価値を査定。</p>
 
       <p class="section-tagline">⌚ 時計</p>
       <div class="guided-search">
@@ -137,9 +138,12 @@
         </div>
       </div>
 
-      <p class="section-tagline">🔍 キーワードで直接検索</p>
+      <p class="section-tagline">🔍 キーワード検索</p>
       <div class="keyword-search">
-        <input type="search" id="keyword-input" placeholder="例：ロレックス デイトナ 126500LN／クロムハーツ ダガーリング" enterkeyhint="search">
+        <select id="kbrand-select" class="keyword-brand">
+          <option value="">① ブランドを選択</option>
+        </select>
+        <input type="search" id="keyword-input" placeholder="② 型番・モデル名（例：デイトナ 126500LN）" enterkeyhint="search" autocomplete="off">
         <button type="button" id="keyword-btn" class="btn-gold">査定する</button>
       </div>
 
@@ -172,6 +176,7 @@
           <p class="card-label">推定市場価値（現在の実売中央値）</p>
           <p class="card-value" id="market-value">—</p>
           <p class="card-note" id="market-note"></p>
+          <p class="premium-line" id="premium-line" hidden></p>
         </div>
       </div>
 
@@ -203,16 +208,25 @@
       <p class="pf-note">出典：<a href="https://rolex-ringo.com/" target="_blank" rel="noopener">りんごロレックスマラソン</a>（買取相場の参考値。実売価格とは異なります）</p>
     </section>
 
-    <section id="news" class="news view-search" hidden>
-      <h2 class="section-title">📰 新着ニュース <span class="section-sub" id="news-sub"></span></h2>
-      <div id="news-list" class="news-list"></div>
-    </section>
-
     <input type="file" id="photo-input" accept="image/*" hidden>
 
     <section id="listings" class="listings view-search" hidden>
       <h2 class="section-title">参照した販売価格 <span class="section-sub" id="sources-label"></span></h2>
       <div id="listing-grid" class="listing-grid"></div>
+    </section>
+
+    <section id="pricelist" class="pricelist view-pricelist">
+      <div class="pricelist-tabs">
+        <button type="button" class="pl-brand-tab" data-brand="ロレックス">ロレックス</button>
+        <button type="button" class="pl-brand-tab" data-brand="パテックフィリップ">パテックフィリップ</button>
+        <button type="button" class="pl-brand-tab" data-brand="オーデマピゲ">オーデマピゲ</button>
+        <button type="button" class="pl-brand-tab" data-brand="ヴァシュロン・コンスタンタン">ヴァシュロン</button>
+      </div>
+      <div class="section-head">
+        <h2 class="section-title"><span id="pricelist-title">現行定価表</span> <span class="section-sub" id="pricelist-sub"></span></h2>
+      </div>
+      <div id="pricelist-body"></div>
+      <p class="pf-note" id="pricelist-note">※ 希望小売価格（税込）。型番をタップすると公式ページが開きます。価格改定により変動する場合があります。</p>
     </section>
 
     <section id="portfolio" class="portfolio view-portfolio" hidden>
@@ -314,7 +328,7 @@
 
   <footer class="site-footer">
     <div class="container">
-      <p><span class="hinomaru"></span> 本査定はすべて国内ソース（<a href="https://kakaku.com/" target="_blank" rel="noopener">価格.com</a>・<a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener">楽天市場</a>・<a href="https://shopping.yahoo.co.jp/" target="_blank" rel="noopener">Yahoo!ショッピング</a>）の販売価格を基にした参考値であり、実際の売買価格を保証するものではありません。</p>
+      <p><span class="hinomaru"></span> 本査定は国内の各種販売・中古相場データ（時計・ブランド品＝価格.com・楽天市場・Yahoo!ショッピング／車＝カーセンサー／貴金属＝田中貴金属）を基にした参考値であり、実際の売買価格を保証するものではありません。</p>
       <p>各商品の価格・名称等の情報の権利は各掲載元および各販売店に帰属します。</p>
     </div>
   </footer>

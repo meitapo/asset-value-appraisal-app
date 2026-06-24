@@ -603,7 +603,6 @@ function renderMetalAppraisal(metal, r, grams, value, date) {
   appraisalEl.hidden = false;
   listingsEl.hidden = true;
   nostockEl.hidden = true;
-  document.getElementById("news").hidden = true; // 貴金属はニュース対象外
   document.getElementById("market-value").textContent = yen(value);
   document.getElementById("market-note").textContent =
     `${metal} 買取相場 ${yen(r.purchase)}/g × ${grams}g（田中貴金属 ${date || ""} 時点）`;
@@ -630,10 +629,11 @@ function resetMetal() {
   weightInput.value = "";
 }
 
-// ---------------------------------------------------------------- キーワード直接検索
+// ---------------------------------------------------------------- キーワード検索
 
 const keywordInput = document.getElementById("keyword-input");
 const keywordBtn = document.getElementById("keyword-btn");
+const kbrandSelect = document.getElementById("kbrand-select");
 
 // ブランド品のモデル名 → ブランド（キーワード検索のブランド自動補完用）
 const JMODEL_TO_BRAND = {};
@@ -643,25 +643,49 @@ for (const [brand, def] of Object.entries(JEWELRY_BRANDS)) {
   }
 }
 
-function keywordSearch() {
-  let kw = keywordInput.value.trim();
-  if (!kw) return;
+// キーワード検索のブランド選択肢（時計・ハイブランドをグループ表示）
+(function populateKeywordBrands() {
+  const groups = [
+    ["時計", Object.keys(BRAND_MODELS)],
+    ["ハイブランド", Object.keys(JEWELRY_BRANDS)],
+  ];
+  for (const [label, brands] of groups) {
+    const og = document.createElement("optgroup");
+    og.label = label;
+    for (const b of brands) {
+      const opt = document.createElement("option");
+      opt.value = b;
+      opt.textContent = b;
+      og.appendChild(opt);
+    }
+    kbrandSelect.appendChild(og);
+  }
+})();
 
-  // モデル名だけで検索されたらブランド名を自動で補う。
-  // 「デイトナ」単体だとバイク用品のDAYTONA等が混ざるため
-  // （デイトナ→ロレックス デイトナ、バーキン→エルメス バーキン）。
-  const first = kw.split(/[\s　]+/)[0];
-  const watchBrand = MODEL_TO_BRAND[first.toLowerCase()];
-  const jewelryBrand = JMODEL_TO_BRAND[first];
-  const autoBrand = watchBrand || jewelryBrand;
-  if (autoBrand && !kw.includes(autoBrand)) kw = autoBrand + " " + kw;
+function keywordSearch() {
+  const selBrand = kbrandSelect.value;
+  let kw = keywordInput.value.trim();
+
+  // ブランド指定があれば検索語に付ける（ハイブランドは検索向けの別名 q を使う）
+  let brandWord = "";
+  if (selBrand) {
+    brandWord = (JEWELRY_BRANDS[selBrand] && JEWELRY_BRANDS[selBrand].q) || selBrand;
+    kw = kw ? `${brandWord} ${kw}` : brandWord;
+  } else if (kw) {
+    // ブランド未指定のときはモデル名からブランドを自動補完
+    // （デイトナ→ロレックス デイトナ等。バイク用品DAYTONA等の混入防止）
+    const first = kw.split(/[\s　]+/)[0];
+    const autoBrand = MODEL_TO_BRAND[first.toLowerCase()] || JMODEL_TO_BRAND[first];
+    if (autoBrand && !kw.includes(autoBrand)) kw = autoBrand + " " + kw;
+  }
+  if (!kw) return; // ブランドもキーワードも空
 
   // 各カスケードをリセットして自由入力で査定する
   resetWatch();
   resetJewelry();
   resetCar();
   resetMetal();
-  selectedBrand = resolveBrand(kw.split(/[\s　]+/)[0]);
+  selectedBrand = resolveBrand(selBrand || kw.split(/[\s　]+/)[0]);
   g.base = kw;
   g.model = "";
   g.ref = "";
@@ -669,12 +693,129 @@ function keywordSearch() {
   g.exclude = [];
   // 型番・文字盤の絞り込みも使えるようにする（時計以外では型番が出ないだけ）
   runAppraisal(kw, { rebuildRef: true, rebuildColor: true });
+  // 検索後は入力欄・ブランド選択をクリア（履歴を残さない）
+  keywordInput.value = "";
+  kbrandSelect.value = "";
+  keywordInput.blur();
 }
 
 keywordBtn.addEventListener("click", keywordSearch);
 keywordInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") keywordSearch();
 });
+
+// ---------------------------------------------------------------- 現行定価表（ブランド別）
+
+// 定価表が用意できているブランド（表示名 → JSONファイルのスラッグ）
+const PRICELIST_FILES = { "ロレックス": "rolex", "パテックフィリップ": "patek", "オーデマピゲ": "ap", "ヴァシュロン・コンスタンタン": "vacheron" };
+
+const pricelistCache = {}; // slug -> data
+let pricelistInited = false;
+
+// 定価表タブ：指定ブランドの定価表を表示する
+async function showPricelistBrand(brand) {
+  document.querySelectorAll(".pl-brand-tab").forEach((b) =>
+    b.classList.toggle("active", b.dataset.brand === brand)
+  );
+  const slug = PRICELIST_FILES[brand];
+  const body = document.getElementById("pricelist-body");
+  if (!pricelistCache[slug]) {
+    body.innerHTML = '<p class="pf-note"><span class="spinner"></span> 定価表を取得しています…</p>';
+    try {
+      pricelistCache[slug] = await (await fetch(`/data/${slug}-pricelist.json`, { cache: "no-store" })).json();
+    } catch (err) {
+      body.innerHTML = '<p class="pf-note">定価表を取得できませんでした。</p>';
+      return;
+    }
+  }
+  renderPricelist(pricelistCache[slug]);
+}
+
+document.querySelectorAll(".pl-brand-tab").forEach((b) =>
+  b.addEventListener("click", () => showPricelistBrand(b.dataset.brand))
+);
+
+// 定価表タブを初めて開いたときに既定ブランド（ロレックス）を表示
+function initPricelistView() {
+  if (pricelistInited) return;
+  pricelistInited = true;
+  showPricelistBrand("ロレックス");
+}
+
+// ---------------------------------------------------------------- プレミアム率（定価との比較）
+
+// 型番（正規化）→ 定価。各ブランドの定価表JSONから起動時に作る。
+const RETAIL_MAP = {};
+const normRef = (s) => String(s).toUpperCase().replace(/[^0-9A-Z]/g, "");
+
+async function loadRetailMaps() {
+  for (const [brand, slug] of Object.entries(PRICELIST_FILES)) {
+    try {
+      const data = await (await fetch(`/data/${slug}-pricelist.json`, { cache: "no-store" })).json();
+      pricelistCache[slug] = data;
+      for (const g of data.groups) {
+        for (const r of g.rows) {
+          const k = normRef(r.ref);
+          if (k.length >= 5 && !RETAIL_MAP[k]) RETAIL_MAP[k] = { retail: r.retail, brand };
+        }
+      }
+    } catch {
+      // 定価表が無いブランドはスキップ
+    }
+  }
+}
+
+// 検索条件（品名・型番）から定価を引き当て、プレミアム率を返す
+function findPremium(keyword, marketMedian) {
+  const kw = normRef(keyword);
+  let best = null;
+  for (const k in RETAIL_MAP) {
+    if (kw.includes(k) && (!best || k.length > best.k.length)) best = { k, ...RETAIL_MAP[k] };
+  }
+  if (!best) return null;
+  const diff = marketMedian - best.retail;
+  return { retail: best.retail, market: marketMedian, diff, pct: (diff / best.retail) * 100 };
+}
+
+// 型番を表示用に整形：区切り（. / -）の後でだけ改行できるよう <wbr> を入れる
+// （長い型番が1文字ずつ縦積みにならないようにする）
+function refDisplay(ref) {
+  return escapeHtml(String(ref)).replace(/([./-])/g, "$1<wbr>");
+}
+
+function renderPricelist(data) {
+  document.getElementById("pricelist-title").textContent = `${data.brand}現行定価表`;
+  document.getElementById("pricelist-sub").textContent = `${data.total}型番（${data.updatedAt} 時点）`;
+  document.getElementById("pricelist-note").textContent =
+    `※ 希望小売価格（税込）。出典：${data.source}。型番をタップで公式ページへ。価格改定により変動する場合があります。`;
+  const body = document.getElementById("pricelist-body");
+  body.innerHTML = "";
+  for (const g of data.groups) {
+    if (!g.rows.length) continue;
+    const sec = document.createElement("div");
+    sec.className = "pricelist-group";
+    const rows = g.rows
+      .map(
+        (r) => `
+        <tr>
+          <td class="pl-photo-cell">${r.image ? `<img class="pl-photo" src="${escapeAttr(r.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ""}</td>
+          <td>${escapeHtml(r.label || "")}</td>
+          <td class="pl-ref">${r.url ? `<a href="${escapeAttr(r.url)}" target="_blank" rel="noopener">${refDisplay(r.ref)}</a>` : refDisplay(r.ref)}</td>
+          <td class="num strong">${yen(r.retail)}</td>
+        </tr>`
+      )
+      .join("");
+    sec.innerHTML = `
+      <h3 class="pricelist-series">${escapeHtml(g.name)}<span>（${g.rows.length}型番）</span></h3>
+      <div class="pf-table-wrap">
+        <table class="pf-table">
+          <thead><tr><th>写真</th><th>モデル</th><th>型番</th><th class="num">定価（税込）</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+    body.appendChild(sec);
+  }
+}
 
 // 時計カスケードをリセット
 function resetWatch() {
@@ -716,43 +857,7 @@ function clearResults() {
   lastResult = null;
   appraisalEl.hidden = true;
   listingsEl.hidden = true;
-  document.getElementById("news").hidden = true;
   hideStatus();
-}
-
-// 選択中のブランド／車種の新着ニュース（新型・新作・発表）を読み込む。
-// 貴金属は対象外。検索が切り替わったら破棄する（queryId判定）。
-async function loadNews(query, queryId) {
-  const newsEl = document.getElementById("news");
-  newsEl.hidden = true;
-  if (!query) return;
-  try {
-    const res = await fetch(`/api/news?q=${encodeURIComponent(query)}`, { cache: "no-store" });
-    const data = await res.json();
-    if (queryId !== currentQueryId) return; // 検索し直された
-    const list = document.getElementById("news-list");
-    const items = (data && data.items) || [];
-    if (items.length === 0) return;
-    document.getElementById("news-sub").textContent = `${query}（Google ニュース）`;
-    list.innerHTML = "";
-    for (const a of items) {
-      const el = document.createElement("a");
-      el.className = "news-item";
-      el.href = a.url;
-      el.target = "_blank";
-      el.rel = "noopener noreferrer";
-      el.innerHTML = `
-        <span class="news-date">${escapeHtml(a.date || "")}</span>
-        <span class="news-body">
-          <span class="news-title">${escapeHtml(a.title)}</span>
-          <span class="news-source">${escapeHtml(a.source || "")}</span>
-        </span>`;
-      list.appendChild(el);
-    }
-    newsEl.hidden = false;
-  } catch {
-    // ニュース取得失敗は査定本体に影響させない
-  }
 }
 
 modelSelect.addEventListener("change", () => {
@@ -838,11 +943,6 @@ async function runAppraisal(keyword, { color = "", exclude = [], rebuildRef = fa
     if (onData) onData(data);
     renderAppraisal(data);
     renderListings(data);
-    // 選択中のブランド／車種の新着ニュースを併せて表示（貴金属は対象外）
-    const newsQuery = car
-      ? `${car.maker} ${car.model}`
-      : selectedBrand || resolveBrand(display.split(/[\s　]+/)[0]) || display.split(/[\s　]+/)[0];
-    loadNews(newsQuery, queryId);
   } catch (err) {
     if (queryId === currentQueryId) showStatus(escapeHtml(err.message), true);
   }
@@ -882,22 +982,40 @@ async function fetchCars(maker, model) {
 // ③ 型番ドロップダウン（現行モデルから順）。
 // 型番が抽出できない検索（ブランド品等）では欄を無効のままにする。
 function renderRefSelect(data) {
-  const models = data.models || [];
+  let models = data.models || [];
   if (models.length === 0) {
     resetRefSelect();
     return;
   }
+  // 定価表に載っている型番＝現行モデルを上位に並べる（並びは安定のまま）
+  const isCurrent = (ref) => !!RETAIL_MAP[normRef(ref)];
+  const current = models.filter((m) => isCurrent(m.ref));
+  const discontinued = models.filter((m) => !isCurrent(m.ref));
+  models = [...current, ...discontinued];
+
   modelSelect.innerHTML = "";
   const allOpt = document.createElement("option");
   allOpt.value = "";
   allOpt.textContent = "すべての型番";
   modelSelect.appendChild(allOpt);
-  for (const m of models) {
-    const opt = document.createElement("option");
-    opt.value = m.ref;
-    opt.textContent = m.ref;
-    modelSelect.appendChild(opt);
-  }
+
+  const addOptions = (list, groupLabel) => {
+    if (list.length === 0) return;
+    // 現行/旧型が混在するときだけグループ見出しを付ける
+    const useGroup = current.length > 0 && discontinued.length > 0;
+    const parent = useGroup ? document.createElement("optgroup") : modelSelect;
+    if (useGroup) parent.label = groupLabel;
+    for (const m of list) {
+      const opt = document.createElement("option");
+      opt.value = m.ref;
+      opt.textContent = m.ref + (isCurrent(m.ref) ? "（現行）" : "");
+      parent.appendChild(opt);
+    }
+    if (useGroup) modelSelect.appendChild(parent);
+  };
+  addOptions(current, "現行モデル");
+  addOptions(discontinued, "旧型・その他");
+
   modelSelect.value = "";
   modelSelect.disabled = false;
 }
@@ -954,6 +1072,19 @@ function renderAppraisal(data) {
   document.getElementById("market-value").textContent = yen(stats.median);
   document.getElementById("market-note").textContent =
     `${(data.sources || []).join("・")}の${stats.sampleCount}件を参照（外れ値除外後 ${stats.usedCount}件で算出）${data.color ? "／文字盤：" + data.color : ""}`;
+
+  // 定価が分かる型番なら、プレミアム率（市場価格÷定価）を表示
+  const premEl = document.getElementById("premium-line");
+  const prem = data.metal || data.car ? null : findPremium(lastResult.keyword || "", stats.median);
+  if (prem) {
+    const cls = prem.diff > 0 ? "delta-up" : prem.diff < 0 ? "delta-down" : "";
+    const sign = prem.diff > 0 ? "+" : "";
+    premEl.innerHTML =
+      `定価 ${yen(prem.retail)} ／ プレミアム <span class="${cls}">${sign}${yen(prem.diff)}（${sign}${prem.pct.toFixed(0)}%）</span>`;
+    premEl.hidden = false;
+  } else {
+    premEl.hidden = true;
+  }
   appraisalEl.hidden = false;
 }
 
@@ -1801,6 +1932,7 @@ function showView(view) {
   document.querySelectorAll(".nav-tab").forEach((b) =>
     b.classList.toggle("active", b.dataset.view === view)
   );
+  if (view === "pricelist") initPricelistView();
   window.scrollTo(0, 0);
 }
 
@@ -1846,5 +1978,6 @@ function escapeAttr(str) {
 showView("search");
 renderPortfolio();
 renderWishlist();
+loadRetailMaps(); // プレミアム率用に定価表を読み込む
 // 背景画像はいったん非表示（再開するときはコメントを外す）
 // renderHeroBackground();

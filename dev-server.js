@@ -9,7 +9,6 @@ const { handler: searchHandler } = require("./netlify/functions/search.js");
 const { handler: ringoHandler } = require("./netlify/functions/ringo.js");
 const { handler: metalsHandler } = require("./netlify/functions/metals.js");
 const { handler: carsHandler } = require("./netlify/functions/cars.js");
-const { handler: newsHandler } = require("./netlify/functions/news.js");
 
 const PORT = 8888;
 const PUBLIC_DIR = path.join(__dirname, "public");
@@ -36,8 +35,6 @@ const server = http.createServer(async (req, res) => {
     "/.netlify/functions/metals": metalsHandler,
     "/api/cars": carsHandler,
     "/.netlify/functions/cars": carsHandler,
-    "/api/news": newsHandler,
-    "/.netlify/functions/news": newsHandler,
   };
   const fnHandler = routes[url.pathname];
   if (fnHandler) {
