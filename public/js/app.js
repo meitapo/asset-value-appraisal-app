@@ -968,7 +968,7 @@ function renderListings(data) {
     card.target = "_blank";
     card.rel = "noopener noreferrer";
     const img = item.image
-      ? `<img class="listing-img" src="${escapeAttr(item.image)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=\\'listing-img placeholder\\'>画像なし</div>'">`
+      ? `<img class="listing-img" src="${escapeAttr(item.image)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.outerHTML='<div class=\\'listing-img placeholder\\'>画像なし</div>'">`
       : `<div class="listing-img placeholder">画像なし</div>`;
     const cond = extractCondition(item.name);
     const acc = extractAccessories(item.name);

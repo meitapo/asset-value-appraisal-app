@@ -83,8 +83,8 @@ exports.handler = async (event) => {
         sampleCount: items.length,
         usedCount: dp.length,
       },
-      // 高い順に表示（査定一覧の方針に合わせる）
-      items: [...display].sort((a, b) => b.price - a.price).slice(0, 30),
+      // 高い順に表示（査定一覧の方針に合わせる）。車は20件まで。
+      items: [...display].sort((a, b) => b.price - a.price).slice(0, 20),
       sources: ["カーセンサー"],
     });
   } catch (err) {
@@ -142,7 +142,12 @@ async function fetchListings(makerCode, modelCode) {
     // 車名は alt の中で最も長いもの（装備まで含む出品名）を採用
     const alts = [...c.matchAll(/alt="([^"]{4,})"/g)].map((m) => m[1].replace(/&nbsp;/g, " ").trim());
     const name = alts.sort((a, b) => b.length - a.length)[0] || "中古車";
-    const img = (c.match(/data-original="([^"]+\.(?:jpg|jpeg|png)[^"]*)"/) || [])[1];
+    // 画像は「物件のメイン外観写真」を優先する。
+    // /bkkn/…_001（1枚目＝外観）が車本体。無ければ他の bkkn 写真→任意の画像。
+    const img =
+      (c.match(/(\/\/[^"' ]*\/bkkn\/[^"' ]*_001[^"' ]*\.(?:jpg|jpeg|png))/i) || [])[1] ||
+      (c.match(/(\/\/[^"' ]*\/bkkn\/[^"' ]+\.(?:jpg|jpeg|png))/i) || [])[1] ||
+      (c.match(/data-original="([^"]+\.(?:jpg|jpeg|png)[^"]*)"/i) || [])[1];
     const price = Number(priceMan.replace(/,/g, "")) * 10000; // 万円→円
     if (!Number.isFinite(price) || price <= 0) continue;
     items.push({
