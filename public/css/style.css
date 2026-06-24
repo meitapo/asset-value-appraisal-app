@@ -830,13 +830,13 @@ body[data-view="portfolio"] .view-pricelist { display: none !important; }
 
 /* 定価表の写真：ブランド問わず同じ枠サイズ（中身は比率維持で収める） */
 .pl-photo-cell {
-  width: 132px;
+  width: 130px;
   text-align: center;
   padding: 8px !important;
 }
 .pl-photo {
-  width: 120px;
-  height: 120px;
+  width: 118px;
+  height: 158px; /* 縦長：ロレックスの縦画像でも時計が大きく見える */
   object-fit: contain;
   vertical-align: middle;
   background: #fff;
@@ -863,7 +863,7 @@ body[data-view="portfolio"] .view-pricelist { display: none !important; }
   .pricelist .pf-table td { display: block; }
   .pricelist .pf-table tr {
     display: grid;
-    grid-template-columns: 64px 1fr;
+    grid-template-columns: 78px 1fr;
     column-gap: 12px;
     align-items: center;
     padding: 10px 8px;
@@ -878,7 +878,7 @@ body[data-view="portfolio"] .view-pricelist { display: none !important; }
     grid-row: 1 / span 3;
     width: auto !important;
   }
-  .pl-photo { width: 60px; height: 60px; }
+  .pl-photo { width: 70px; height: 92px; }
   .pricelist .pf-table td:nth-child(2) { grid-column: 2; font-size: 13px; font-weight: 600; }
   .pricelist .pl-ref { grid-column: 2; min-width: 0; font-size: 12px; color: var(--text-muted); }
   /* 定価は左寄せ・大きめゴールドで必ず見える位置に */
